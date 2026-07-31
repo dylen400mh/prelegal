@@ -1,12 +1,14 @@
 import { describe, it, expect } from "vitest";
 import {
   confidentialityText,
+  coverFields,
   formatEffectiveDate,
   governingLawText,
   jurisdictionText,
   modificationsText,
   mndaTermText,
   purposeText,
+  signatureRows,
   withPlaceholder,
 } from "./format";
 import { DEFAULT_MNDA, type MndaData } from "./types";
@@ -57,6 +59,26 @@ describe("formatEffectiveDate", () => {
 
   it("rejects month zero", () => {
     expect(formatEffectiveDate("2026-00-10")).toBe("[Effective Date]");
+  });
+
+  it("rejects an impossible day for the month (Feb 31)", () => {
+    expect(formatEffectiveDate("2026-02-31")).toBe("[Effective Date]");
+  });
+
+  it("rejects April 31 (30-day month)", () => {
+    expect(formatEffectiveDate("2026-04-31")).toBe("[Effective Date]");
+  });
+
+  it("rejects day zero", () => {
+    expect(formatEffectiveDate("2026-01-00")).toBe("[Effective Date]");
+  });
+
+  it("accepts Feb 29 in a leap year", () => {
+    expect(formatEffectiveDate("2024-02-29")).toBe("February 29, 2024");
+  });
+
+  it("rejects Feb 29 in a non-leap year", () => {
+    expect(formatEffectiveDate("2025-02-29")).toBe("[Effective Date]");
   });
 });
 
@@ -133,5 +155,58 @@ describe("modificationsText", () => {
   it("defaults to 'None.' when blank", () => {
     expect(modificationsText(make({ modifications: "" }))).toBe("None.");
     expect(modificationsText(make({ modifications: "   " }))).toBe("None.");
+  });
+});
+
+describe("coverFields", () => {
+  it("lists the seven cover-page fields in document order", () => {
+    const labels = coverFields(make()).map((f) => f.label);
+    expect(labels).toEqual([
+      "Purpose",
+      "Effective Date",
+      "MNDA Term",
+      "Term of Confidentiality",
+      "Governing Law",
+      "Jurisdiction",
+      "Modifications",
+    ]);
+  });
+
+  it("resolves each field through the display helpers", () => {
+    const fields = coverFields(
+      make({ governingLaw: "Delaware", effectiveDate: "2026-08-01" }),
+    );
+    const byLabel = Object.fromEntries(fields.map((f) => [f.label, f.value]));
+    expect(byLabel["Governing Law"]).toBe("Delaware");
+    expect(byLabel["Effective Date"]).toBe("August 1, 2026");
+    expect(byLabel["Modifications"]).toBe("None.");
+  });
+});
+
+describe("signatureRows", () => {
+  it("lists the six signature rows in order", () => {
+    const labels = signatureRows(DEFAULT_MNDA.party1).map((r) => r.label);
+    expect(labels).toEqual([
+      "Signature",
+      "Print Name",
+      "Title",
+      "Company",
+      "Notice Address",
+      "Date",
+    ]);
+  });
+
+  it("leaves Signature and Date blank but fills captured party details", () => {
+    const rows = signatureRows({
+      company: "Acme, Inc.",
+      name: "Jane Doe",
+      title: "CEO",
+      noticeAddress: "legal@acme.com",
+    });
+    const byLabel = Object.fromEntries(rows.map((r) => [r.label, r.value]));
+    expect(byLabel["Signature"]).toBe("");
+    expect(byLabel["Date"]).toBe("");
+    expect(byLabel["Print Name"]).toBe("Jane Doe");
+    expect(byLabel["Company"]).toBe("Acme, Inc.");
   });
 });

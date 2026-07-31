@@ -7,15 +7,7 @@ import {
 } from "@react-pdf/renderer";
 import type { MndaData, Party } from "@/nda/types";
 import { STANDARD_TERMS, STANDARD_TERMS_ATTRIBUTION } from "@/nda/terms";
-import {
-  confidentialityText,
-  formatEffectiveDate,
-  governingLawText,
-  jurisdictionText,
-  mndaTermText,
-  modificationsText,
-  purposeText,
-} from "@/nda/format";
+import { coverFields, signatureRows } from "@/nda/format";
 
 const styles = StyleSheet.create({
   page: {
@@ -77,19 +69,9 @@ export function NdaPdfDocument({ data }: { data: MndaData }) {
         <Text style={styles.title}>Mutual Non-Disclosure Agreement</Text>
 
         <Text style={styles.sectionLabel}>Cover Page</Text>
-        <CoverRow label="Purpose" value={purposeText(data)} />
-        <CoverRow
-          label="Effective Date"
-          value={formatEffectiveDate(data.effectiveDate)}
-        />
-        <CoverRow label="MNDA Term" value={mndaTermText(data)} />
-        <CoverRow
-          label="Term of Confidentiality"
-          value={confidentialityText(data)}
-        />
-        <CoverRow label="Governing Law" value={governingLawText(data)} />
-        <CoverRow label="Jurisdiction" value={jurisdictionText(data)} />
-        <CoverRow label="Modifications" value={modificationsText(data)} />
+        {coverFields(data).map((field) => (
+          <CoverRow key={field.label} label={field.label} value={field.value} />
+        ))}
 
         <Text style={styles.intro}>
           By signing this Cover Page, each party agrees to enter into this MNDA
@@ -136,12 +118,9 @@ function SignatureBlock({
   return (
     <View style={styles.signatureBlock}>
       <Text style={styles.signatureHeading}>{heading}</Text>
-      <SignatureRow label="Signature" value="" />
-      <SignatureRow label="Print Name" value={party.name} />
-      <SignatureRow label="Title" value={party.title} />
-      <SignatureRow label="Company" value={party.company} />
-      <SignatureRow label="Notice Address" value={party.noticeAddress} />
-      <SignatureRow label="Date" value="" />
+      {signatureRows(party).map((row) => (
+        <SignatureRow key={row.label} label={row.label} value={row.value} />
+      ))}
     </View>
   );
 }

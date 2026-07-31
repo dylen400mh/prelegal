@@ -2,7 +2,7 @@
 // two renderings never drift apart. Each helper falls back to a bracketed
 // placeholder (e.g. "[Effective Date]") when a value has not been filled in yet.
 
-import type { MndaData } from "./types";
+import type { MndaData, Party } from "./types";
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -19,10 +19,21 @@ export function withPlaceholder(value: string, placeholder: string): string {
 export function formatEffectiveDate(iso: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim());
   if (!match) return "[Effective Date]";
-  const [, y, m, d] = match;
-  const monthIndex = Number(m) - 1;
+  const year = Number(match[1]);
+  const monthIndex = Number(match[2]) - 1;
+  const day = Number(match[3]);
   if (monthIndex < 0 || monthIndex > 11) return "[Effective Date]";
-  return `${MONTHS[monthIndex]} ${Number(d)}, ${y}`;
+  // Reject impossible calendar days (e.g. "2026-02-31") by round-tripping
+  // through Date — a rolled-over date won't match the parts we put in.
+  const date = new Date(year, monthIndex, day);
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== monthIndex ||
+    date.getDate() !== day
+  ) {
+    return "[Effective Date]";
+  }
+  return `${MONTHS[monthIndex]} ${day}, ${year}`;
 }
 
 function pluralYears(years: number): string {
@@ -60,3 +71,39 @@ export const modificationsText = (data: MndaData): string => {
   const trimmed = data.modifications.trim();
   return trimmed.length > 0 ? trimmed : "None.";
 };
+
+export interface LabelledValue {
+  label: string;
+  value: string;
+}
+
+/**
+ * The Cover Page fields, in order — the single source of truth for both the
+ * on-screen preview and the PDF, so the two renderings cannot drift apart.
+ */
+export function coverFields(data: MndaData): LabelledValue[] {
+  return [
+    { label: "Purpose", value: purposeText(data) },
+    { label: "Effective Date", value: formatEffectiveDate(data.effectiveDate) },
+    { label: "MNDA Term", value: mndaTermText(data) },
+    { label: "Term of Confidentiality", value: confidentialityText(data) },
+    { label: "Governing Law", value: governingLawText(data) },
+    { label: "Jurisdiction", value: jurisdictionText(data) },
+    { label: "Modifications", value: modificationsText(data) },
+  ];
+}
+
+/**
+ * A party's signature-block rows, in order. Signature and Date are intentionally
+ * blank — they are signed by hand after the document is downloaded.
+ */
+export function signatureRows(party: Party): LabelledValue[] {
+  return [
+    { label: "Signature", value: "" },
+    { label: "Print Name", value: party.name },
+    { label: "Title", value: party.title },
+    { label: "Company", value: party.company },
+    { label: "Notice Address", value: party.noticeAddress },
+    { label: "Date", value: "" },
+  ];
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { MndaData, Party } from "@/nda/types";
 
 interface NdaFormProps {
@@ -65,16 +66,11 @@ export default function NdaForm({ data, onChange }: NdaFormProps) {
               onChange={() => set("mndaTermMode", "expires")}
             />
             <span>Expires</span>
-            <input
-              type="number"
-              min={1}
-              aria-label="MNDA term length in years"
-              className="w-16 rounded-md border border-slate-300 px-2 py-1 text-sm disabled:bg-slate-100"
+            <YearInput
+              ariaLabel="MNDA term length in years"
               value={data.mndaTermYears}
               disabled={data.mndaTermMode !== "expires"}
-              onChange={(e) =>
-                set("mndaTermYears", Math.max(1, Number(e.target.value) || 1))
-              }
+              onCommit={(years) => set("mndaTermYears", years)}
             />
             <span>year(s) from the effective date</span>
           </label>
@@ -99,19 +95,11 @@ export default function NdaForm({ data, onChange }: NdaFormProps) {
               checked={data.confidentialityMode === "years"}
               onChange={() => set("confidentialityMode", "years")}
             />
-            <input
-              type="number"
-              min={1}
-              aria-label="Term of confidentiality length in years"
-              className="w-16 rounded-md border border-slate-300 px-2 py-1 text-sm disabled:bg-slate-100"
+            <YearInput
+              ariaLabel="Term of confidentiality length in years"
               value={data.confidentialityYears}
               disabled={data.confidentialityMode !== "years"}
-              onChange={(e) =>
-                set(
-                  "confidentialityYears",
-                  Math.max(1, Number(e.target.value) || 1),
-                )
-              }
+              onCommit={(years) => set("confidentialityYears", years)}
             />
             <span>year(s) from the effective date</span>
           </label>
@@ -185,6 +173,54 @@ export default function NdaForm({ data, onChange }: NdaFormProps) {
         />
       </div>
     </form>
+  );
+}
+
+/**
+ * A whole-number year input that can be freely cleared and retyped. While the
+ * field is empty or mid-edit the parent keeps its last valid value; a valid
+ * entry commits immediately, and blurring normalizes to a minimum of 1.
+ */
+function YearInput({
+  value,
+  disabled,
+  ariaLabel,
+  onCommit,
+}: {
+  value: number;
+  disabled: boolean;
+  ariaLabel: string;
+  onCommit: (years: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(value));
+
+  // Keep the draft in sync when the committed value changes elsewhere.
+  useEffect(() => {
+    setDraft(String(value));
+  }, [value]);
+
+  return (
+    <input
+      type="number"
+      min={1}
+      step={1}
+      aria-label={ariaLabel}
+      className="w-16 rounded-md border border-slate-300 px-2 py-1 text-sm disabled:bg-slate-100"
+      value={draft}
+      disabled={disabled}
+      onChange={(e) => {
+        setDraft(e.target.value);
+        const parsed = Number(e.target.value);
+        if (e.target.value !== "" && Number.isFinite(parsed) && parsed >= 1) {
+          onCommit(Math.floor(parsed));
+        }
+      }}
+      onBlur={() => {
+        const normalized = Math.max(1, Math.floor(Number(draft) || 1));
+        setDraft(String(normalized));
+        onCommit(normalized);
+      }}
+    />
   );
 }
 

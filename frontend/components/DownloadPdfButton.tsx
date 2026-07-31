@@ -10,9 +10,11 @@ import type { MndaData } from "@/nda/types";
  */
 export default function DownloadPdfButton({ data }: { data: MndaData }) {
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleDownload = async () => {
     setBusy(true);
+    setError(null);
     try {
       const [{ pdf }, { NdaPdfDocument }] = await Promise.all([
         import("@react-pdf/renderer"),
@@ -27,19 +29,29 @@ export default function DownloadPdfButton({ data }: { data: MndaData }) {
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Failed to generate the MNDA PDF", err);
+      setError("Sorry — the PDF couldn't be generated. Please try again.");
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleDownload}
-      disabled={busy}
-      className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
-    >
-      {busy ? "Preparing PDF…" : "Download PDF"}
-    </button>
+    <div className="flex flex-col items-end gap-1">
+      <button
+        type="button"
+        onClick={handleDownload}
+        disabled={busy}
+        className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {busy ? "Preparing PDF…" : "Download PDF"}
+      </button>
+      {error && (
+        <p role="alert" className="text-xs text-red-600">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }

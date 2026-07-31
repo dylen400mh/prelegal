@@ -2,19 +2,12 @@
 
 import type { MndaData, Party } from "@/nda/types";
 import { STANDARD_TERMS, STANDARD_TERMS_ATTRIBUTION } from "@/nda/terms";
-import {
-  confidentialityText,
-  formatEffectiveDate,
-  governingLawText,
-  jurisdictionText,
-  mndaTermText,
-  modificationsText,
-  purposeText,
-} from "@/nda/format";
+import { coverFields, signatureRows } from "@/nda/format";
 
 /**
- * On-screen rendering of the assembled MNDA. Mirrors the layout produced by the
- * PDF document so the preview matches the download.
+ * On-screen rendering of the assembled MNDA. It reads its cover fields and
+ * signature rows from the same helpers the PDF uses, so the preview matches the
+ * download.
  */
 export default function NdaPreview({ data }: { data: MndaData }) {
   return (
@@ -27,19 +20,12 @@ export default function NdaPreview({ data }: { data: MndaData }) {
         <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500">
           Cover Page
         </h2>
-        <CoverField label="Purpose" value={purposeText(data)} />
-        <CoverField
-          label="Effective Date"
-          value={formatEffectiveDate(data.effectiveDate)}
-        />
-        <CoverField label="MNDA Term" value={mndaTermText(data)} />
-        <CoverField
-          label="Term of Confidentiality"
-          value={confidentialityText(data)}
-        />
-        <CoverField label="Governing Law" value={governingLawText(data)} />
-        <CoverField label="Jurisdiction" value={jurisdictionText(data)} />
-        <CoverField label="Modifications" value={modificationsText(data)} />
+        {coverFields(data).map((field) => (
+          <div key={field.label} className="grid grid-cols-[160px_1fr] gap-3">
+            <span className="font-semibold">{field.label}</span>
+            <span className="whitespace-pre-wrap">{field.value}</span>
+          </div>
+        ))}
       </section>
 
       <p className="mt-6 text-[13px]">
@@ -74,15 +60,6 @@ export default function NdaPreview({ data }: { data: MndaData }) {
   );
 }
 
-function CoverField({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="grid grid-cols-[160px_1fr] gap-3">
-      <span className="font-semibold">{label}</span>
-      <span className="whitespace-pre-wrap">{value}</span>
-    </div>
-  );
-}
-
 function SignatureBlock({
   heading,
   party,
@@ -93,23 +70,14 @@ function SignatureBlock({
   return (
     <div className="space-y-2 text-[12px]">
       <p className="font-bold">{heading}</p>
-      <SignatureRow label="Signature" value="" />
-      <SignatureRow label="Print Name" value={party.name} />
-      <SignatureRow label="Title" value={party.title} />
-      <SignatureRow label="Company" value={party.company} />
-      <SignatureRow label="Notice Address" value={party.noticeAddress} />
-      <SignatureRow label="Date" value="" />
-    </div>
-  );
-}
-
-function SignatureRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <span className="text-slate-500">{label}:</span>{" "}
-      <span className="border-b border-slate-400">
-        {value || " ".repeat(20)}
-      </span>
+      {signatureRows(party).map((row) => (
+        <div key={row.label}>
+          <span className="text-slate-500">{row.label}:</span>{" "}
+          <span className="inline-block min-w-[10rem] border-b border-slate-400 align-baseline">
+            {row.value || " "}
+          </span>
+        </div>
+      ))}
     </div>
   );
 }

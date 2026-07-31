@@ -72,14 +72,28 @@ describe("NdaForm", () => {
     expect(readState().confidentialityMode).toBe("perpetuity");
   });
 
-  it("coerces a cleared MNDA-year input to a minimum of 1", async () => {
+  it("keeps the last valid year while cleared, then normalizes to 1 on blur", async () => {
     const user = userEvent.setup();
     render(<Harness initial={{ ...DEFAULT_MNDA, mndaTermYears: 2 }} />);
     const yearInput = screen.getByRole("spinbutton", {
       name: "MNDA term length in years",
     });
     await user.clear(yearInput);
+    // The committed value is untouched until a valid entry or blur.
+    expect(readState().mndaTermYears).toBe(2);
+    await user.tab();
     expect(readState().mndaTermYears).toBe(1);
+  });
+
+  it("lets the user clear the year field and type a new value", async () => {
+    const user = userEvent.setup();
+    render(<Harness initial={{ ...DEFAULT_MNDA, mndaTermYears: 1 }} />);
+    const yearInput = screen.getByRole("spinbutton", {
+      name: "MNDA term length in years",
+    });
+    await user.clear(yearInput);
+    await user.type(yearInput, "5");
+    expect(readState().mndaTermYears).toBe(5);
   });
 
   it("records details for each party independently", async () => {
