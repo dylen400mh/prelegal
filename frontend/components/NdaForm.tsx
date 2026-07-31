@@ -68,6 +68,7 @@ export default function NdaForm({ data, onChange }: NdaFormProps) {
             <input
               type="number"
               min={1}
+              aria-label="MNDA term length in years"
               className="w-16 rounded-md border border-slate-300 px-2 py-1 text-sm disabled:bg-slate-100"
               value={data.mndaTermYears}
               disabled={data.mndaTermMode !== "expires"}
@@ -101,6 +102,7 @@ export default function NdaForm({ data, onChange }: NdaFormProps) {
             <input
               type="number"
               min={1}
+              aria-label="Term of confidentiality length in years"
               className="w-16 rounded-md border border-slate-300 px-2 py-1 text-sm disabled:bg-slate-100"
               value={data.confidentialityYears}
               disabled={data.confidentialityMode !== "years"}
@@ -171,11 +173,13 @@ export default function NdaForm({ data, onChange }: NdaFormProps) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <PartyFields
           title="Party 1"
+          idPrefix="party1"
           party={data.party1}
           onChange={(patch) => setParty("party1", patch)}
         />
         <PartyFields
           title="Party 2"
+          idPrefix="party2"
           party={data.party2}
           onChange={(patch) => setParty("party2", patch)}
         />
@@ -186,10 +190,12 @@ export default function NdaForm({ data, onChange }: NdaFormProps) {
 
 function PartyFields({
   title,
+  idPrefix,
   party,
   onChange,
 }: {
   title: string;
+  idPrefix: string;
   party: Party;
   onChange: (patch: Partial<Party>) => void;
 }) {
@@ -197,8 +203,11 @@ function PartyFields({
     <fieldset className={sectionClass}>
       <legend className={legendClass}>{title}</legend>
       <div>
-        <label className={labelClass}>Company</label>
+        <label className={labelClass} htmlFor={`${idPrefix}-company`}>
+          Company
+        </label>
         <input
+          id={`${idPrefix}-company`}
           className={inputClass}
           value={party.company}
           onChange={(e) => onChange({ company: e.target.value })}
@@ -206,8 +215,11 @@ function PartyFields({
         />
       </div>
       <div>
-        <label className={labelClass}>Print name</label>
+        <label className={labelClass} htmlFor={`${idPrefix}-name`}>
+          Print name
+        </label>
         <input
+          id={`${idPrefix}-name`}
           className={inputClass}
           value={party.name}
           onChange={(e) => onChange({ name: e.target.value })}
@@ -215,8 +227,11 @@ function PartyFields({
         />
       </div>
       <div>
-        <label className={labelClass}>Title</label>
+        <label className={labelClass} htmlFor={`${idPrefix}-title`}>
+          Title
+        </label>
         <input
+          id={`${idPrefix}-title`}
           className={inputClass}
           value={party.title}
           onChange={(e) => onChange({ title: e.target.value })}
@@ -224,11 +239,12 @@ function PartyFields({
         />
       </div>
       <div>
-        <label className={labelClass}>
+        <label className={labelClass} htmlFor={`${idPrefix}-notice`}>
           Notice address{" "}
           <span className="font-normal text-slate-400">(email or postal)</span>
         </label>
         <input
+          id={`${idPrefix}-notice`}
           className={inputClass}
           value={party.noticeAddress}
           onChange={(e) => onChange({ noticeAddress: e.target.value })}
