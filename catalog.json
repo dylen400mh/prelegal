@@ -1,0 +1,67 @@
+{
+  "source": "https://github.com/CommonPaper",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "templates": [
+    {
+      "name": "Mutual Non-Disclosure Agreement (Standard Terms)",
+      "description": "Standard Terms for a mutual NDA that lets each party disclose confidential information for a defined purpose, covering use, protection, exceptions, term, and return of confidential information. Pairs with the Mutual NDA Cover Page.",
+      "filename": "mutual-nda.md"
+    },
+    {
+      "name": "Mutual Non-Disclosure Agreement (Cover Page)",
+      "description": "Fill-in Cover Page that incorporates the Mutual NDA Standard Terms, capturing the purpose, effective date, term, confidentiality period, governing law, and signatures.",
+      "filename": "mutual-nda-coverpage.md"
+    },
+    {
+      "name": "Cloud Service Agreement",
+      "description": "Standard Terms for providing a cloud/SaaS service, covering access and use, support, customer content, machine learning, payment, term and termination, warranties, liability, indemnification, and confidentiality.",
+      "filename": "cloud-service-agreement.md"
+    },
+    {
+      "name": "Design Partner Agreement",
+      "description": "Agreement for early design partners who get pre-release access to a product in exchange for feedback and participation in a development program, covering feedback ownership, confidentiality, and IP.",
+      "filename": "design-partner-agreement.md"
+    },
+    {
+      "name": "Service Level Agreement",
+      "description": "SLA Standard Terms defining target uptime and response-time commitments for a cloud service, the method for calculating availability, and service credit remedies.",
+      "filename": "service-level-agreement.md"
+    },
+    {
+      "name": "Professional Services Agreement",
+      "description": "Standard Terms for delivering professional services and deliverables under statements of work, covering change orders, acceptance, IP assignment, payment, warranties, liability, insurance, and confidentiality.",
+      "filename": "professional-services-agreement.md"
+    },
+    {
+      "name": "Data Processing Agreement",
+      "description": "DPA Standard Terms governing the processing of personal data between controller/processor and processor/subprocessor, including subprocessors, restricted transfers (EEA SCCs and UK Addendum), security incidents, audits, and deletion.",
+      "filename": "data-processing-agreement.md"
+    },
+    {
+      "name": "Software License Agreement",
+      "description": "Standard Terms licensing installable software for defined permitted uses, covering user accounts, updates, open source, restrictions, payment, term and termination, warranties, liability, indemnification, and confidentiality.",
+      "filename": "software-license-agreement.md"
+    },
+    {
+      "name": "Partnership Agreement",
+      "description": "Standard Terms for a business partnership between two companies, covering each party's obligations, fees, a trademark/brand license, privacy, dispute escalation, warranties, liability, indemnification, and confidentiality.",
+      "filename": "partnership-agreement.md"
+    },
+    {
+      "name": "Pilot Agreement",
+      "description": "Standard Terms for a time-limited pilot giving a customer evaluation access to a product, covering license, customer content, restrictions, term and termination, disclaimers, liability, and confidentiality.",
+      "filename": "pilot-agreement.md"
+    },
+    {
+      "name": "Business Associate Agreement",
+      "description": "HIPAA BAA Standard Terms setting out a business associate's obligations for protected health information (PHI), including permitted uses, safeguards, subcontractors, breach notification, and term and termination.",
+      "filename": "business-associate-agreement.md"
+    },
+    {
+      "name": "AI Addendum",
+      "description": "Addendum supplementing an existing agreement to cover AI/ML services, including use of input and output, model training restrictions, ownership of output, personal data, and AI-specific disclaimers.",
+      "filename": "ai-addendum.md"
+    }
+  ]
+}
