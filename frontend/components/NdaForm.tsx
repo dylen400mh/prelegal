@@ -1,0 +1,292 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import type { MndaData, Party } from "@/nda/types";
+
+interface NdaFormProps {
+  data: MndaData;
+  onChange: (data: MndaData) => void;
+}
+
+const labelClass = "block text-sm font-medium text-slate-700 mb-1";
+const inputClass =
+  "w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm " +
+  "focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
+const sectionClass = "space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm";
+const legendClass = "text-base font-semibold text-slate-900";
+
+export default function NdaForm({ data, onChange }: NdaFormProps) {
+  const set = <K extends keyof MndaData>(key: K, value: MndaData[K]) =>
+    onChange({ ...data, [key]: value });
+
+  const setParty = (which: "party1" | "party2", patch: Partial<Party>) =>
+    onChange({ ...data, [which]: { ...data[which], ...patch } });
+
+  return (
+    <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+      {/* Agreement terms */}
+      <fieldset className={sectionClass}>
+        <legend className={legendClass}>Agreement terms</legend>
+
+        <div>
+          <label className={labelClass} htmlFor="purpose">
+            Purpose
+          </label>
+          <textarea
+            id="purpose"
+            className={inputClass}
+            rows={2}
+            value={data.purpose}
+            onChange={(e) => set("purpose", e.target.value)}
+            placeholder="How Confidential Information may be used"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass} htmlFor="effectiveDate">
+            Effective date
+          </label>
+          <input
+            id="effectiveDate"
+            type="date"
+            className={inputClass}
+            value={data.effectiveDate}
+            onChange={(e) => set("effectiveDate", e.target.value)}
+          />
+        </div>
+
+        {/* MNDA Term */}
+        <div className="space-y-2">
+          <span className={labelClass}>MNDA term</span>
+          <label className="flex items-center gap-2 text-sm text-slate-700">
+            <input
+              type="radio"
+              name="mndaTermMode"
+              checked={data.mndaTermMode === "expires"}
+              onChange={() => set("mndaTermMode", "expires")}
+            />
+            <span>Expires</span>
+            <YearInput
+              ariaLabel="MNDA term length in years"
+              value={data.mndaTermYears}
+              disabled={data.mndaTermMode !== "expires"}
+              onCommit={(years) => set("mndaTermYears", years)}
+            />
+            <span>year(s) from the effective date</span>
+          </label>
+          <label className="flex items-center gap-2 text-sm text-slate-700">
+            <input
+              type="radio"
+              name="mndaTermMode"
+              checked={data.mndaTermMode === "untilTerminated"}
+              onChange={() => set("mndaTermMode", "untilTerminated")}
+            />
+            <span>Continues until terminated</span>
+          </label>
+        </div>
+
+        {/* Term of Confidentiality */}
+        <div className="space-y-2">
+          <span className={labelClass}>Term of confidentiality</span>
+          <label className="flex items-center gap-2 text-sm text-slate-700">
+            <input
+              type="radio"
+              name="confidentialityMode"
+              checked={data.confidentialityMode === "years"}
+              onChange={() => set("confidentialityMode", "years")}
+            />
+            <YearInput
+              ariaLabel="Term of confidentiality length in years"
+              value={data.confidentialityYears}
+              disabled={data.confidentialityMode !== "years"}
+              onCommit={(years) => set("confidentialityYears", years)}
+            />
+            <span>year(s) from the effective date</span>
+          </label>
+          <label className="flex items-center gap-2 text-sm text-slate-700">
+            <input
+              type="radio"
+              name="confidentialityMode"
+              checked={data.confidentialityMode === "perpetuity"}
+              onChange={() => set("confidentialityMode", "perpetuity")}
+            />
+            <span>In perpetuity</span>
+          </label>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className={labelClass} htmlFor="governingLaw">
+              Governing law (state)
+            </label>
+            <input
+              id="governingLaw"
+              className={inputClass}
+              value={data.governingLaw}
+              onChange={(e) => set("governingLaw", e.target.value)}
+              placeholder="Delaware"
+            />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="jurisdiction">
+              Jurisdiction
+            </label>
+            <input
+              id="jurisdiction"
+              className={inputClass}
+              value={data.jurisdiction}
+              onChange={(e) => set("jurisdiction", e.target.value)}
+              placeholder="New Castle, DE"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className={labelClass} htmlFor="modifications">
+            Modifications to the Standard Terms{" "}
+            <span className="font-normal text-slate-400">(optional)</span>
+          </label>
+          <textarea
+            id="modifications"
+            className={inputClass}
+            rows={2}
+            value={data.modifications}
+            onChange={(e) => set("modifications", e.target.value)}
+            placeholder="List any modifications to the MNDA"
+          />
+        </div>
+      </fieldset>
+
+      {/* Parties */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <PartyFields
+          title="Party 1"
+          idPrefix="party1"
+          party={data.party1}
+          onChange={(patch) => setParty("party1", patch)}
+        />
+        <PartyFields
+          title="Party 2"
+          idPrefix="party2"
+          party={data.party2}
+          onChange={(patch) => setParty("party2", patch)}
+        />
+      </div>
+    </form>
+  );
+}
+
+/**
+ * A whole-number year input that can be freely cleared and retyped. While the
+ * field is empty or mid-edit the parent keeps its last valid value; a valid
+ * entry commits immediately, and blurring normalizes to a minimum of 1.
+ */
+function YearInput({
+  value,
+  disabled,
+  ariaLabel,
+  onCommit,
+}: {
+  value: number;
+  disabled: boolean;
+  ariaLabel: string;
+  onCommit: (years: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(value));
+
+  // Keep the draft in sync when the committed value changes elsewhere.
+  useEffect(() => {
+    setDraft(String(value));
+  }, [value]);
+
+  return (
+    <input
+      type="number"
+      min={1}
+      step={1}
+      aria-label={ariaLabel}
+      className="w-16 rounded-md border border-slate-300 px-2 py-1 text-sm disabled:bg-slate-100"
+      value={draft}
+      disabled={disabled}
+      onChange={(e) => {
+        setDraft(e.target.value);
+        const parsed = Number(e.target.value);
+        if (e.target.value !== "" && Number.isFinite(parsed) && parsed >= 1) {
+          onCommit(Math.floor(parsed));
+        }
+      }}
+      onBlur={() => {
+        const normalized = Math.max(1, Math.floor(Number(draft) || 1));
+        setDraft(String(normalized));
+        onCommit(normalized);
+      }}
+    />
+  );
+}
+
+function PartyFields({
+  title,
+  idPrefix,
+  party,
+  onChange,
+}: {
+  title: string;
+  idPrefix: string;
+  party: Party;
+  onChange: (patch: Partial<Party>) => void;
+}) {
+  return (
+    <fieldset className={sectionClass}>
+      <legend className={legendClass}>{title}</legend>
+      <div>
+        <label className={labelClass} htmlFor={`${idPrefix}-company`}>
+          Company
+        </label>
+        <input
+          id={`${idPrefix}-company`}
+          className={inputClass}
+          value={party.company}
+          onChange={(e) => onChange({ company: e.target.value })}
+          placeholder="Acme, Inc."
+        />
+      </div>
+      <div>
+        <label className={labelClass} htmlFor={`${idPrefix}-name`}>
+          Print name
+        </label>
+        <input
+          id={`${idPrefix}-name`}
+          className={inputClass}
+          value={party.name}
+          onChange={(e) => onChange({ name: e.target.value })}
+          placeholder="Jane Doe"
+        />
+      </div>
+      <div>
+        <label className={labelClass} htmlFor={`${idPrefix}-title`}>
+          Title
+        </label>
+        <input
+          id={`${idPrefix}-title`}
+          className={inputClass}
+          value={party.title}
+          onChange={(e) => onChange({ title: e.target.value })}
+          placeholder="Chief Executive Officer"
+        />
+      </div>
+      <div>
+        <label className={labelClass} htmlFor={`${idPrefix}-notice`}>
+          Notice address{" "}
+          <span className="font-normal text-slate-400">(email or postal)</span>
+        </label>
+        <input
+          id={`${idPrefix}-notice`}
+          className={inputClass}
+          value={party.noticeAddress}
+          onChange={(e) => onChange({ noticeAddress: e.target.value })}
+          placeholder="legal@acme.com"
+        />
+      </div>
+    </fieldset>
+  );
+}
