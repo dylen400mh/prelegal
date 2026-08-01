@@ -107,6 +107,12 @@ yarn-error.log*
 *.db
 
 # ===========================
+# Backend build artifacts
+# ===========================
+# Frontend static export copied in for local prod-parity serving
+backend/static/
+
+# ===========================
 # OS / Editor
 # ===========================
 .DS_Store
