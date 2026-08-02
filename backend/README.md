@@ -1,7 +1,7 @@
 # prelegal backend
 
 FastAPI service that serves the statically-exported frontend, provides the
-authentication foundation for V1, and powers the NDA chat. Built with
+authentication foundation for V1, and powers the document chat. Built with
 [`uv`](https://docs.astral.sh/uv/).
 
 ## Layout
@@ -13,11 +13,13 @@ app/
   database.py        # SQLAlchemy engine/session; init_db() recreates schema
   models.py          # SQLAlchemy models (User)
   security.py        # bcrypt hashing + JWT encode/decode
-  schemas.py         # Pydantic request/response models (incl. NDA chat)
-  nda_chat.py        # system prompt + message assembly for the NDA chat
+  schemas.py         # Pydantic request/response models (incl. document chat)
+  doc_chat.py        # system prompt + message assembly for the document chat
+  registry.py        # loads registry.json (supported doc types + fields)
+  registry.json      # generated (see scripts/build-registry.mjs)
   routers/
     auth.py          # POST /api/auth/signup, /signin; GET /api/auth/me
-    chat.py          # POST /api/chat  (NDA interviewer, LiteLLM -> Cerebras)
+    chat.py          # POST /api/chat  (document interviewer, LiteLLM -> Cerebras)
     health.py        # GET /api/health
 tests/               # pytest (FastAPI TestClient)
 ```
@@ -38,10 +40,14 @@ drops and recreates all tables), matching the container's ephemeral-DB model.
 > Auth is backend-only for now. Sign-in/sign-up screens land in PL-7.
 
 `/api/chat` is stateless: the client sends the conversation so far (`messages`)
-and the current NDA (`data`, an `MndaData`), and gets back the assistant's next
-`reply` plus the updated `data`. It calls an LLM via LiteLLM → OpenRouter →
-Cerebras (`openrouter/openai/gpt-oss-120b`) with structured outputs, and needs
-`OPENROUTER_API_KEY` in the environment. It's unauthenticated for now.
+and the current document (`data`, a `DocumentData` with `docType`,
+`coverFields`, `parties`), and gets back the assistant's next `reply` plus the
+updated `data`. The prompt (built in `doc_chat.py` from the registry) has the
+LLM pick a supported document type — routing unsupported requests to the closest
+one — and collect field values; it never writes legal text. It calls an LLM via
+LiteLLM → OpenRouter → Cerebras (`openrouter/openai/gpt-oss-120b`) with
+structured outputs, and needs `OPENROUTER_API_KEY` in the environment. It's
+unauthenticated for now.
 
 ## Development
 

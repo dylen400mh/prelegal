@@ -1,7 +1,7 @@
-// Client for the NDA chat backend (POST /api/chat). Served from the same origin
-// as the backend in the container, so a relative URL works.
+// Client for the document chat backend (POST /api/chat). Served from the same
+// origin as the backend in the container, so a relative URL works.
 
-import type { MndaData } from "./types";
+import type { DocumentData } from "./types";
 
 export interface ChatMessage {
   role: "user" | "assistant";
@@ -10,12 +10,12 @@ export interface ChatMessage {
 
 export interface ChatResponse {
   reply: string;
-  data: MndaData;
+  data: DocumentData;
 }
 
 export async function sendChat(
   messages: ChatMessage[],
-  data: MndaData,
+  data: DocumentData,
 ): Promise<ChatResponse> {
   const res = await fetch("/api/chat", {
     method: "POST",

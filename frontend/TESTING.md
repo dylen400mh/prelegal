@@ -13,12 +13,13 @@ test running in a Node environment.
 
 | Test file | Covers |
 | --- | --- |
-| `nda/format.test.ts` | Every branch of the display helpers — date formatting (valid/invalid/out-of-range), singular/plural year text, perpetuity & until-terminated variants, and placeholder fallbacks. |
-| `nda/terms.test.ts` | Standard Terms integrity — all 11 sections present & ordered, no leftover HTML markup, defined terms referenced, disclaimer preserved verbatim, attribution intact, sane defaults. |
-| `components/NdaChat.test.tsx` | Chat panel behavior (`fetch` mocked) — greeting shown, send flow renders user + assistant messages, returned `MndaData` pushed via `onChange`, request carries the current data + message, error path surfaces an alert and restores the input. |
-| `components/NdaPreview.test.tsx` | Assembled-document rendering — placeholders vs filled values, term variants, all 11 sections, party details. |
-| `app/page.test.tsx` | Chat (mocked `sendChat`) → shared state → live preview wiring end-to-end. |
-| `components/NdaPdfDocument.test.tsx` | Real PDF generation via `renderToBuffer` — valid `%PDF-` output, non-trivial size, and all term variants render without throwing. |
+| `nda/registry.test.ts` | Registry integrity — all 11 document types present, each has metadata/fields/verbatim terms/attribution, MNDA terms embedded verbatim, unknown id returns undefined. |
+| `nda/format.test.ts` | Display helpers — cover-field mapping, placeholder fallbacks, and signature rows. |
+| `components/DocumentChat.test.tsx` | Chat panel behavior (`fetch` mocked) — greeting shown, send flow renders user + assistant messages, returned `DocumentData` pushed via `onChange`, request payload, error path surfaces an alert and restores the input. |
+| `components/DocumentPreview.test.tsx` | Assembled-document rendering — placeholder before a doc is chosen; title, fields, party blocks, and verbatim terms once chosen; bracketed placeholders for empty fields. |
+| `app/page.test.tsx` | Chat (mocked `sendChat`) → shared state → live preview wiring; download disabled until a doc type is set. |
+| `components/DocumentPdfDocument.test.tsx` | Real PDF generation via `renderToBuffer` — valid `%PDF-` output for a populated doc and for **every** registry document type, plus the empty-state placeholder PDF. |
+| `components/DownloadPdfButton.test.tsx` | Download disabled until a doc type is set; happy-path download; error surfaced on failure. |
 
 ## Manual test checklist
 
@@ -27,19 +28,21 @@ The chat calls the backend at `/api/chat`, so run the **full container**
 http://localhost:8000. (`npm run dev` on :3000 serves the UI but can't reach the
 backend without a proxy/CORS.)
 
+**Chat → document selection**
+- [ ] The chat opens with the assistant greeting and the preview shows a "pick a document" placeholder; Download PDF is disabled.
+- [ ] Asking for a supported document (e.g. "a Cloud Service Agreement") selects it — the preview title and Standard Terms switch to that document.
+- [ ] Asking for an **unsupported** document (e.g. "an employment contract") is declined, with the closest supported document offered instead; no document is selected.
+
 **Chat → preview (live updates)**
-- [ ] The chat opens with the assistant greeting and the preview shows `[…]` placeholders.
-- [ ] Describing the parties (company, signer name, title, notice address) fills both signature blocks correctly, without cross-contaminating Party 1/Party 2.
-- [ ] Giving an **effective date** shows it formatted (e.g. "September 1, 2026").
-- [ ] Asking for the MNDA to **continue until terminated** / confidentiality **in perpetuity** updates the preview text accordingly.
-- [ ] Stating **governing law** and **jurisdiction** fills them in the preview.
+- [ ] Describing the parties (role, company, signer name, title, notice address) fills the signature blocks with the right role headings (e.g. Provider/Customer), without cross-contamination.
+- [ ] Stated fields (dates, governing law, subscription period, etc.) appear under Key Terms in the preview.
 - [ ] The assistant asks natural follow-up questions and only fills fields the user actually provided.
 - [ ] A backend/LLM failure surfaces an inline error and keeps the typed message.
 
 **PDF download**
-- [ ] Clicking **Download PDF** downloads `mutual-nda.pdf`.
+- [ ] Once a document type is chosen, Download PDF enables and downloads `<doc-type>.pdf`.
 - [ ] The button shows "Preparing PDF…" briefly, then re-enables.
-- [ ] Opening the PDF shows the Cover Page values, blank signature/date lines, and all 11 Standard Terms.
+- [ ] Opening the PDF shows the Key Terms, blank signature/date lines, and the document's verbatim Standard Terms.
 - [ ] No errors in the browser console during generation.
 
 **Layout / responsiveness**

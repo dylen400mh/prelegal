@@ -1,8 +1,6 @@
 import json
 from types import SimpleNamespace
 
-import pytest
-
 from app.routers import chat as chat_router
 
 
@@ -16,68 +14,67 @@ def _fake_completion(content: str):
     return _completion
 
 
-def test_chat_returns_reply_and_updated_data(client, monkeypatch):
+def _post(client, messages, data):
+    return client.post("/api/chat", json={"messages": messages, "data": data})
+
+
+def test_chat_selects_document_and_collects_fields(client, monkeypatch):
     result = {
-        "reply": "Got it. What state's law should govern the NDA?",
+        "reply": "A Mutual NDA it is. Who are the two parties?",
         "data": {
-            "purpose": "Evaluating a partnership.",
-            "effectiveDate": "",
-            "mndaTermMode": "expires",
-            "mndaTermYears": 2,
-            "confidentialityMode": "years",
-            "confidentialityYears": 2,
-            "governingLaw": "",
-            "jurisdiction": "",
-            "modifications": "",
-            "party1": {"company": "Acme, Inc.", "name": "", "title": "", "noticeAddress": ""},
-            "party2": {"company": "", "name": "", "title": "", "noticeAddress": ""},
+            "docType": "mutual-nda",
+            "coverFields": [
+                {"label": "Purpose", "value": "Evaluating a partnership."}
+            ],
+            "parties": [
+                {
+                    "heading": "Party 1",
+                    "company": "Acme, Inc.",
+                    "name": "",
+                    "title": "",
+                    "noticeAddress": "",
+                }
+            ],
         },
     }
-    monkeypatch.setattr(
-        chat_router, "completion", _fake_completion(json.dumps(result))
-    )
+    monkeypatch.setattr(chat_router, "completion", _fake_completion(json.dumps(result)))
 
-    response = client.post(
-        "/api/chat",
-        json={
-            "messages": [{"role": "user", "content": "It's for evaluating a partnership with Acme."}],
-            "data": {
-                "purpose": "",
-                "effectiveDate": "",
-                "mndaTermMode": "expires",
-                "mndaTermYears": 1,
-                "confidentialityMode": "years",
-                "confidentialityYears": 1,
-                "governingLaw": "",
-                "jurisdiction": "",
-                "modifications": "",
-                "party1": {"company": "", "name": "", "title": "", "noticeAddress": ""},
-                "party2": {"company": "", "name": "", "title": "", "noticeAddress": ""},
-            },
-        },
+    response = _post(
+        client,
+        [{"role": "user", "content": "I need an NDA to evaluate a partnership with Acme."}],
+        {"docType": "", "coverFields": [], "parties": []},
     )
 
     assert response.status_code == 200
     body = response.json()
     assert body["reply"] == result["reply"]
-    assert body["data"]["purpose"] == "Evaluating a partnership."
-    assert body["data"]["mndaTermYears"] == 2
-    assert body["data"]["party1"]["company"] == "Acme, Inc."
+    assert body["data"]["docType"] == "mutual-nda"
+    assert body["data"]["coverFields"][0]["label"] == "Purpose"
+    assert body["data"]["parties"][0]["company"] == "Acme, Inc."
 
 
-def test_chat_accepts_empty_history(client, monkeypatch):
-    result = {"reply": "Hello!", "data": {"party1": {}, "party2": {}}}
-    monkeypatch.setattr(
-        chat_router, "completion", _fake_completion(json.dumps(result))
-    )
+def test_chat_accepts_empty_history_and_document(client, monkeypatch):
+    result = {"reply": "What kind of document do you need?", "data": {"docType": ""}}
+    monkeypatch.setattr(chat_router, "completion", _fake_completion(json.dumps(result)))
 
-    response = client.post(
-        "/api/chat",
-        json={"messages": [], "data": {"party1": {}, "party2": {}}},
-    )
+    response = _post(client, [], {"docType": "", "coverFields": [], "parties": []})
 
     assert response.status_code == 200
-    assert response.json()["reply"] == "Hello!"
+    assert response.json()["data"]["docType"] == ""
+
+
+def test_chat_clears_unknown_document_type(client, monkeypatch):
+    # A hallucinated docType must not survive — it would yield an empty PDF.
+    result = {
+        "reply": "Let's start over — what do you need?",
+        "data": {"docType": "employment-contract", "coverFields": [], "parties": []},
+    }
+    monkeypatch.setattr(chat_router, "completion", _fake_completion(json.dumps(result)))
+
+    response = _post(client, [{"role": "user", "content": "hi"}], {"docType": ""})
+
+    assert response.status_code == 200
+    assert response.json()["data"]["docType"] == ""
 
 
 def test_chat_llm_error_returns_502(client, monkeypatch):
@@ -86,10 +83,7 @@ def test_chat_llm_error_returns_502(client, monkeypatch):
 
     monkeypatch.setattr(chat_router, "completion", _boom)
 
-    response = client.post(
-        "/api/chat",
-        json={"messages": [], "data": {"party1": {}, "party2": {}}},
-    )
+    response = _post(client, [], {"docType": "", "coverFields": [], "parties": []})
 
     assert response.status_code == 502
     assert response.json()["detail"] == "AI service error"

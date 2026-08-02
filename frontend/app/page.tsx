@@ -1,30 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import NdaChat from "@/components/NdaChat";
-import NdaPreview from "@/components/NdaPreview";
+import DocumentChat from "@/components/DocumentChat";
+import DocumentPreview from "@/components/DocumentPreview";
 import DownloadPdfButton from "@/components/DownloadPdfButton";
-import { DEFAULT_MNDA, type MndaData } from "@/nda/types";
+import { EMPTY_DOCUMENT, type DocumentData } from "@/nda/types";
 
 export default function Home() {
-  const [data, setData] = useState<MndaData>(DEFAULT_MNDA);
+  const [data, setData] = useState<DocumentData>(EMPTY_DOCUMENT);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
       <header className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">
-          Mutual NDA Creator
+          Legal Document Creator
         </h1>
         <p className="mt-1 text-sm text-slate-600">
-          Chat with an AI to build a Common Paper Mutual Non-Disclosure
-          Agreement, then download it as a PDF.
+          Chat with an AI to build a Common Paper legal document, then download
+          it as a PDF.
         </p>
       </header>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Left: chat */}
         <div>
-          <NdaChat data={data} onChange={setData} />
+          <DocumentChat data={data} onChange={setData} />
         </div>
 
         {/* Right: live preview + download */}
@@ -36,7 +36,7 @@ export default function Home() {
             <DownloadPdfButton data={data} />
           </div>
           <div className="max-h-[calc(100vh-8rem)] overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 p-4">
-            <NdaPreview data={data} />
+            <DocumentPreview data={data} />
           </div>
         </div>
       </div>
