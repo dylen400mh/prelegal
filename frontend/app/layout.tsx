@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Mutual NDA Creator",
   description:
-    "Fill in a short form and generate a downloadable Common Paper Mutual Non-Disclosure Agreement.",
+    "Chat with an AI to generate a downloadable Common Paper Mutual Non-Disclosure Agreement.",
 };
 
 export default function RootLayout({
