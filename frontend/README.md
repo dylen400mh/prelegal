@@ -1,12 +1,13 @@
-# Mutual NDA Creator (frontend)
+# Legal Document Creator (frontend)
 
 A Next.js app that turns a conversation with an AI into a downloadable
-**Common Paper Mutual Non-Disclosure Agreement**.
+**Common Paper legal document** — any of the 11 supported templates (Mutual NDA,
+Cloud Service Agreement, Pilot Agreement, DPA, and more).
 
-The user chats with an assistant that asks about the cover-page details
-(purpose, effective date, term, governing law, and both parties' information),
-sees the assembled MNDA update live as answers are captured, and downloads it as
-a PDF.
+The user chats with an assistant that works out which document they need
+(declining unsupported types and offering the closest one), asks about the
+document's fields, sees the assembled document update live as answers are
+captured, and downloads it as a PDF.
 
 ## Getting started
 
@@ -27,22 +28,25 @@ npm run dev               # http://localhost:3000 (chat can't reach the backend)
 
 ## How it works
 
-The assembled MNDA is a **Cover Page** (the user's values) plus the static
-**Standard Terms** — exactly how Common Paper documents compose, where the
-Standard Terms reference defined terms that the Cover Page fills in.
+An assembled document is the **fields** the user supplies (gathered by the chat)
+plus the static **Standard Terms** for the chosen type. The verbatim terms come
+from the generated document registry (`nda/registry.json`), so the legal text
+stays exact and the AI never writes it.
 
 | Path | Purpose |
 | --- | --- |
-| `nda/types.ts` | Document data model (`MndaData`) and defaults |
-| `nda/terms.ts` | Common Paper Mutual NDA Standard Terms v1.0, embedded verbatim |
-| `nda/format.ts` | Shared display helpers (term text, date formatting, placeholders) |
+| `nda/types.ts` | Document data model (`DocumentData`, `PartyBlock`) |
+| `nda/registry.ts` | Typed access to the generated `registry.json` (types, fields, terms) |
+| `nda/registry.json` | Generated registry — do not hand-edit (see `../scripts/build-registry.mjs`) |
+| `nda/format.ts` | Shared display helpers (cover fields, signature rows, placeholders) |
 | `nda/chat.ts` | Client for the backend `/api/chat` endpoint |
-| `components/NdaChat.tsx` | The AI chat panel; captures answers into `MndaData` |
-| `components/NdaPreview.tsx` | Live on-screen rendering of the document |
-| `components/NdaPdfDocument.tsx` | `@react-pdf/renderer` document for the PDF |
+| `components/DocumentChat.tsx` | The AI chat panel; captures answers into `DocumentData` |
+| `components/DocumentPreview.tsx` | Live on-screen rendering of the document |
+| `components/DocumentPdfDocument.tsx` | `@react-pdf/renderer` document for the PDF |
 | `components/DownloadPdfButton.tsx` | Client-side PDF generation + download |
 
-The Standard Terms text is sourced from `../templates/mutual-nda.md`.
+The Standard Terms are sourced from `../templates/*.md` via the registry build
+script.
 
 ## Tech
 
@@ -52,6 +56,7 @@ PDF generation runs entirely client-side; the chat calls the FastAPI backend's
 
 ## Attribution
 
-Document content is the Common Paper Mutual Non-Disclosure Agreement
-(Version 1.0), free to use under
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Document content comes from the Common Paper templates, free to use under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Each document's
+per-template attribution is carried in the registry (`nda/registry.json`) and
+shown in the assembled document.

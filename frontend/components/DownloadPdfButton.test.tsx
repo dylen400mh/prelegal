@@ -2,13 +2,15 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import DownloadPdfButton from "./DownloadPdfButton";
-import { DEFAULT_MNDA } from "@/nda/types";
+import { EMPTY_DOCUMENT, type DocumentData } from "@/nda/types";
+
+const DOC: DocumentData = { docType: "mutual-nda", coverFields: [], parties: [] };
 
 // Control what the lazily-imported PDF renderer does per-test.
 const toBlob = vi.fn();
 vi.mock("@react-pdf/renderer", () => ({
   pdf: () => ({ toBlob }),
-  // NdaPdfDocument (imported alongside) needs these at module load.
+  // DocumentPdfDocument (imported alongside) needs these at module load.
   StyleSheet: { create: (styles: unknown) => styles },
   Document: () => null,
   Page: () => null,
@@ -28,12 +30,17 @@ describe("DownloadPdfButton", () => {
     vi.restoreAllMocks();
   });
 
+  it("is disabled until a document type is chosen", () => {
+    render(<DownloadPdfButton data={EMPTY_DOCUMENT} />);
+    expect(screen.getByRole("button", { name: "Download PDF" })).toBeDisabled();
+  });
+
   it("downloads a generated PDF on click", async () => {
     toBlob.mockResolvedValue(new Blob(["%PDF-"], { type: "application/pdf" }));
     const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, "click");
     const user = userEvent.setup();
 
-    render(<DownloadPdfButton data={DEFAULT_MNDA} />);
+    render(<DownloadPdfButton data={DOC} />);
     await user.click(screen.getByRole("button", { name: "Download PDF" }));
 
     // The download runs through async dynamic imports, so wait for it to land.
@@ -49,7 +56,7 @@ describe("DownloadPdfButton", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     const user = userEvent.setup();
 
-    render(<DownloadPdfButton data={DEFAULT_MNDA} />);
+    render(<DownloadPdfButton data={DOC} />);
     await user.click(screen.getByRole("button", { name: "Download PDF" }));
 
     const alert = await screen.findByRole("alert");

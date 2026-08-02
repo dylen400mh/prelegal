@@ -5,8 +5,8 @@ import {
   View,
   StyleSheet,
 } from "@react-pdf/renderer";
-import type { MndaData, Party } from "@/nda/types";
-import { STANDARD_TERMS, STANDARD_TERMS_ATTRIBUTION } from "@/nda/terms";
+import type { DocumentData, PartyBlock } from "@/nda/types";
+import { getDocumentType, type DocumentType } from "@/nda/registry";
 import { coverFields, signatureRows } from "@/nda/format";
 
 const styles = StyleSheet.create({
@@ -36,8 +36,7 @@ const styles = StyleSheet.create({
   coverRow: { flexDirection: "row", marginBottom: 6 },
   coverLabel: { width: 130, fontFamily: "Times-Bold" },
   coverValue: { flex: 1 },
-  intro: { marginTop: 14, marginBottom: 10 },
-  signatureArea: { flexDirection: "row", gap: 24 },
+  signatureArea: { flexDirection: "row", gap: 24, marginTop: 14 },
   signatureBlock: { flex: 1 },
   signatureHeading: { fontFamily: "Times-Bold", marginBottom: 6 },
   signatureRow: {
@@ -58,44 +57,75 @@ const styles = StyleSheet.create({
   },
   term: { marginBottom: 8, textAlign: "justify" },
   termHeading: { fontFamily: "Times-Bold" },
+  termBlock: { marginTop: 3 },
   attribution: { marginTop: 18, fontSize: 8, color: "#64748b" },
 });
 
-/** The downloadable MNDA as a react-pdf document. */
-export function NdaPdfDocument({ data }: { data: MndaData }) {
+/** The downloadable document as a react-pdf document. */
+export function DocumentPdfDocument({ data }: { data: DocumentData }) {
+  const doc = getDocumentType(data.docType);
+  if (!doc) return <EmptyDoc />;
+
+  const fields = coverFields(data);
+
   return (
-    <Document title="Mutual Non-Disclosure Agreement">
+    <Document title={doc.name}>
       <Page size="LETTER" style={styles.page}>
-        <Text style={styles.title}>Mutual Non-Disclosure Agreement</Text>
+        <Text style={styles.title}>{doc.name}</Text>
 
-        <Text style={styles.sectionLabel}>Cover Page</Text>
-        {coverFields(data).map((field) => (
-          <CoverRow key={field.label} label={field.label} value={field.value} />
-        ))}
+        {fields.length > 0 && (
+          <>
+            <Text style={styles.sectionLabel}>Key Terms</Text>
+            {fields.map((field) => (
+              <CoverRow key={field.label} label={field.label} value={field.value} />
+            ))}
+          </>
+        )}
 
-        <Text style={styles.intro}>
-          By signing this Cover Page, each party agrees to enter into this MNDA
-          as of the Effective Date.
-        </Text>
-
-        <View style={styles.signatureArea}>
-          <SignatureBlock heading="Party 1" party={data.party1} />
-          <SignatureBlock heading="Party 2" party={data.party2} />
-        </View>
+        {data.parties.length > 0 && (
+          <View style={styles.signatureArea}>
+            {data.parties.map((party, i) => (
+              <SignatureBlock key={i} party={party} />
+            ))}
+          </View>
+        )}
 
         <Text style={styles.termsTitle}>Standard Terms</Text>
-        {STANDARD_TERMS.map((section) => (
-          <Text key={section.n} style={styles.term}>
-            <Text style={styles.termHeading}>
-              {section.n}. {section.heading}.
-            </Text>{" "}
-            {section.text}
-          </Text>
+        {doc.terms.map((section) => (
+          <Term key={section.n} section={section} />
         ))}
 
-        <Text style={styles.attribution}>{STANDARD_TERMS_ATTRIBUTION}</Text>
+        <Text style={styles.attribution}>{doc.attribution}</Text>
       </Page>
     </Document>
+  );
+}
+
+function EmptyDoc() {
+  return (
+    <Document title="Document">
+      <Page size="LETTER" style={styles.page}>
+        <Text>No document selected.</Text>
+      </Page>
+    </Document>
+  );
+}
+
+function Term({ section }: { section: DocumentType["terms"][number] }) {
+  return (
+    <View style={styles.term}>
+      <Text>
+        <Text style={styles.termHeading}>
+          {section.n}. {section.heading}.
+        </Text>{" "}
+        {section.blocks[0]}
+      </Text>
+      {section.blocks.slice(1).map((block, i) => (
+        <Text key={i} style={styles.termBlock}>
+          {block}
+        </Text>
+      ))}
+    </View>
   );
 }
 
@@ -108,16 +138,10 @@ function CoverRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function SignatureBlock({
-  heading,
-  party,
-}: {
-  heading: string;
-  party: Party;
-}) {
+function SignatureBlock({ party }: { party: PartyBlock }) {
   return (
     <View style={styles.signatureBlock}>
-      <Text style={styles.signatureHeading}>{heading}</Text>
+      <Text style={styles.signatureHeading}>{party.heading || "Party"}</Text>
       {signatureRows(party).map((row) => (
         <SignatureRow key={row.label} label={row.label} value={row.value} />
       ))}

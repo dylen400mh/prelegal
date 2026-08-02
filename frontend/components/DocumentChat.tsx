@@ -2,23 +2,23 @@
 
 import { useEffect, useRef, useState } from "react";
 import { sendChat, type ChatMessage } from "@/nda/chat";
-import type { MndaData } from "@/nda/types";
+import type { DocumentData } from "@/nda/types";
 
-interface NdaChatProps {
-  data: MndaData;
-  onChange: (data: MndaData) => void;
+interface DocumentChatProps {
+  data: DocumentData;
+  onChange: (data: DocumentData) => void;
 }
 
 const GREETING: ChatMessage = {
   role: "assistant",
   content:
-    "Hi! I'll help you put together a Mutual NDA. Just tell me about the " +
-    "agreement in your own words — who the two parties are, what it's for, " +
-    "and any terms you have in mind. I'll ask about anything I still need, " +
-    "and the document on the right will fill in as we go.",
+    "Hi! I can help you create a legal document from the Common Paper " +
+    "templates — things like a Mutual NDA, Cloud Service Agreement, Pilot " +
+    "Agreement, DPA, and more. What kind of document do you need? Tell me a " +
+    "bit about the situation and I'll take it from there.",
 };
 
-export default function NdaChat({ data, onChange }: NdaChatProps) {
+export default function DocumentChat({ data, onChange }: DocumentChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([GREETING]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -99,7 +99,7 @@ export default function NdaChat({ data, onChange }: NdaChatProps) {
             value={input}
             disabled={busy}
             aria-label="Message"
-            placeholder="Describe your NDA or answer the question…"
+            placeholder="Describe the document you need or answer the question…"
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {

@@ -1,0 +1,679 @@
+[
+  {
+    "id": "mutual-nda",
+    "name": "Mutual Non-Disclosure Agreement",
+    "description": "Standard Terms for a mutual NDA that lets each party disclose confidential information for a defined purpose, covering use, protection, exceptions, term, and return of confidential information. Pairs with the Mutual NDA Cover Page.",
+    "fields": [
+      {
+        "name": "Purpose",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Effective Date",
+        "group": "Cover Page"
+      },
+      {
+        "name": "MNDA Term",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Term of Confidentiality",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Governing Law",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Jurisdiction",
+        "group": "Cover Page"
+      }
+    ]
+  },
+  {
+    "id": "cloud-service-agreement",
+    "name": "Cloud Service Agreement",
+    "description": "Standard Terms for providing a cloud/SaaS service, covering access and use, support, customer content, machine learning, payment, term and termination, warranties, liability, indemnification, and confidentiality.",
+    "fields": [
+      {
+        "name": "Subscription Period",
+        "group": "Order Form"
+      },
+      {
+        "name": "Customer",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Provider",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Technical Support",
+        "group": "Order Form"
+      },
+      {
+        "name": "Use Limitations",
+        "group": "Order Form"
+      },
+      {
+        "name": "DPA",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Payment Process",
+        "group": "Order Form"
+      },
+      {
+        "name": "Order Date",
+        "group": "Order Form"
+      },
+      {
+        "name": "Subscription Periods",
+        "group": "Order Form"
+      },
+      {
+        "name": "Non-Renewal Notice Date",
+        "group": "Order Form"
+      },
+      {
+        "name": "Effective Date",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Additional Warranties",
+        "group": "Key Terms"
+      },
+      {
+        "name": "General Cap Amount",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Increased Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Increased Cap Amount",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Unlimited Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Provider Covered Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Customer Covered Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Provider Covered Claim",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Governing Law",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Chosen Courts",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Customer Covered Claim",
+        "group": "Key Terms"
+      }
+    ]
+  },
+  {
+    "id": "design-partner-agreement",
+    "name": "Design Partner Agreement",
+    "description": "Agreement for early design partners who get pre-release access to a product in exchange for feedback and participation in a development program, covering feedback ownership, confidentiality, and IP.",
+    "fields": [
+      {
+        "name": "Partner",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Term",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Provider",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Program",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Fees",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Effective Date",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Governing Law",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Chosen Courts",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Notice Address",
+        "group": "Key Terms"
+      }
+    ]
+  },
+  {
+    "id": "service-level-agreement",
+    "name": "Service Level Agreement",
+    "description": "SLA Standard Terms defining target uptime and response-time commitments for a cloud service, the method for calculating availability, and service credit remedies.",
+    "fields": [
+      {
+        "name": "Target Uptime",
+        "group": "Order Form"
+      },
+      {
+        "name": "Provider",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Customer",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Subscription Period",
+        "group": "Order Form"
+      },
+      {
+        "name": "Target Response Time",
+        "group": "Order Form"
+      },
+      {
+        "name": "Support Channel",
+        "group": "Order Form"
+      },
+      {
+        "name": "Uptime Credit",
+        "group": "Order Form"
+      },
+      {
+        "name": "Response Time Credit",
+        "group": "Order Form"
+      },
+      {
+        "name": "Scheduled Downtime",
+        "group": "Order Form"
+      }
+    ]
+  },
+  {
+    "id": "professional-services-agreement",
+    "name": "Professional Services Agreement",
+    "description": "Standard Terms for delivering professional services and deliverables under statements of work, covering change orders, acceptance, IP assignment, payment, warranties, liability, insurance, and confidentiality.",
+    "fields": [
+      {
+        "name": "Customer",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Provider",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Customer Policies",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Deliverables",
+        "group": "Statement of Work"
+      },
+      {
+        "name": "Deliverable",
+        "group": "Statement of Work"
+      },
+      {
+        "name": "Rejection Period",
+        "group": "Statement of Work"
+      },
+      {
+        "name": "Resubmission Period",
+        "group": "Statement of Work"
+      },
+      {
+        "name": "Customer Obligations",
+        "group": "Statement of Work"
+      },
+      {
+        "name": "Time of Assignment",
+        "group": "Statement of Work"
+      },
+      {
+        "name": "DPA",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Security Policy",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Fees",
+        "group": "Statement of Work"
+      },
+      {
+        "name": "Payment Period",
+        "group": "Statement of Work"
+      },
+      {
+        "name": "Effective Date",
+        "group": "Key Terms"
+      },
+      {
+        "name": "SOW Term",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Additional Warranties",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Increased Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Increased Cap Amount",
+        "group": "Key Terms"
+      },
+      {
+        "name": "General Cap Amount",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Unlimited Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Provider Covered Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Provider Covered Claim",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Customer Covered Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Customer Covered Claim",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Insurance Minimums",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Governing Law",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Chosen Courts",
+        "group": "Key Terms"
+      }
+    ]
+  },
+  {
+    "id": "data-processing-agreement",
+    "name": "Data Processing Agreement",
+    "description": "DPA Standard Terms governing the processing of personal data between controller/processor and processor/subprocessor, including subprocessors, restricted transfers (EEA SCCs and UK Addendum), security incidents, audits, and deletion.",
+    "fields": [
+      {
+        "name": "Customer",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Provider",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Categories of Personal Data",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Categories of Data Subjects",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Agreement",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Special Category Data",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Special Category Data Restrictions or Safeguards",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Frequency of Transfer",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Nature and Purpose of Processing",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Duration of Processing",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Approved Subprocessors",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Governing Member State",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Security Policy",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Provider Security Contact",
+        "group": "Key Terms"
+      }
+    ]
+  },
+  {
+    "id": "software-license-agreement",
+    "name": "Software License Agreement",
+    "description": "Standard Terms licensing installable software for defined permitted uses, covering user accounts, updates, open source, restrictions, payment, term and termination, warranties, liability, indemnification, and confidentiality.",
+    "fields": [
+      {
+        "name": "Subscription Period",
+        "group": "Order Form"
+      },
+      {
+        "name": "Provider",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Customer",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Permitted Uses",
+        "group": "Order Form"
+      },
+      {
+        "name": "Effective Date",
+        "group": "Key Terms"
+      },
+      {
+        "name": "License Limits",
+        "group": "Order Form"
+      },
+      {
+        "name": "Payment Process",
+        "group": "Order Form"
+      },
+      {
+        "name": "Order Date",
+        "group": "Order Form"
+      },
+      {
+        "name": "Subscription Periods",
+        "group": "Order Form"
+      },
+      {
+        "name": "Non-Renewal Notice Date",
+        "group": "Order Form"
+      },
+      {
+        "name": "Deletion Procedure",
+        "group": "Order Form"
+      },
+      {
+        "name": "Additional Warranties",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Warranty Period",
+        "group": "Order Form"
+      },
+      {
+        "name": "General Cap Amount",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Increased Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Increased Cap Amount",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Unlimited Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Provider Covered Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Customer Covered Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Provider Covered Claim",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Governing Law",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Chosen Courts",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Customer Covered Claim",
+        "group": "Key Terms"
+      }
+    ]
+  },
+  {
+    "id": "partnership-agreement",
+    "name": "Partnership Agreement",
+    "description": "Standard Terms for a business partnership between two companies, covering each party's obligations, fees, a trademark/brand license, privacy, dispute escalation, warranties, liability, indemnification, and confidentiality.",
+    "fields": [
+      {
+        "name": "Obligations",
+        "group": "Business Terms"
+      },
+      {
+        "name": "Payment Process",
+        "group": "Business Terms"
+      },
+      {
+        "name": "Payment Schedule",
+        "group": "Business Terms"
+      },
+      {
+        "name": "Territory",
+        "group": "Business Terms"
+      },
+      {
+        "name": "Brand Guidelines",
+        "group": "Key Terms"
+      },
+      {
+        "name": "DPA",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Effective Date",
+        "group": "Key Terms"
+      },
+      {
+        "name": "End Date",
+        "group": "Business Terms"
+      },
+      {
+        "name": "Additional Warranties",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Company",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Partner",
+        "group": "Key Terms"
+      },
+      {
+        "name": "General Cap Amount",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Increased Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Increased Cap Amount",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Unlimited Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Company Covered Claim",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Partner Covered Claims",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Governing Law",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Chosen Courts",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Partner Covered Claim",
+        "group": "Key Terms"
+      }
+    ]
+  },
+  {
+    "id": "pilot-agreement",
+    "name": "Pilot Agreement",
+    "description": "Standard Terms for a time-limited pilot giving a customer evaluation access to a product, covering license, customer content, restrictions, term and termination, disclaimers, liability, and confidentiality.",
+    "fields": [
+      {
+        "name": "Pilot Period",
+        "group": "Order Form"
+      },
+      {
+        "name": "Customer",
+        "group": "Order Form"
+      },
+      {
+        "name": "Provider",
+        "group": "Order Form"
+      },
+      {
+        "name": "Effective Date",
+        "group": "Order Form"
+      },
+      {
+        "name": "General Cap Amount",
+        "group": "Order Form"
+      },
+      {
+        "name": "Governing Law",
+        "group": "Order Form"
+      },
+      {
+        "name": "Chosen Courts",
+        "group": "Order Form"
+      },
+      {
+        "name": "Notice Address",
+        "group": "Order Form"
+      }
+    ]
+  },
+  {
+    "id": "business-associate-agreement",
+    "name": "Business Associate Agreement",
+    "description": "HIPAA BAA Standard Terms setting out a business associate's obligations for protected health information (PHI), including permitted uses, safeguards, subcontractors, breach notification, and term and termination.",
+    "fields": [
+      {
+        "name": "Provider",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Company",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Limitations",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Breach Notification Period",
+        "group": "Key Terms"
+      },
+      {
+        "name": "BAA Effective Date",
+        "group": "Key Terms"
+      },
+      {
+        "name": "Agreement",
+        "group": "Key Terms"
+      }
+    ]
+  },
+  {
+    "id": "ai-addendum",
+    "name": "AI Addendum",
+    "description": "Addendum supplementing an existing agreement to cover AI/ML services, including use of input and output, model training restrictions, ownership of output, personal data, and AI-specific disclaimers.",
+    "fields": [
+      {
+        "name": "Customer",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Provider",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Training Data",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Training Purposes",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Training Restrictions",
+        "group": "Cover Page"
+      },
+      {
+        "name": "Improvement Restrictions",
+        "group": "Cover Page"
+      }
+    ]
+  }
+]

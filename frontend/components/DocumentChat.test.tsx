@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import NdaChat from "./NdaChat";
-import { DEFAULT_MNDA, type MndaData } from "@/nda/types";
+import DocumentChat from "./DocumentChat";
+import { EMPTY_DOCUMENT, type DocumentData } from "@/nda/types";
 
-function mockFetchOnce(reply: string, data: MndaData) {
+function mockFetchOnce(reply: string, data: DocumentData) {
   const fetchMock = vi.fn().mockResolvedValue({
     ok: true,
     json: async () => ({ reply, data }),
@@ -13,7 +13,7 @@ function mockFetchOnce(reply: string, data: MndaData) {
   return fetchMock;
 }
 
-describe("NdaChat", () => {
+describe("DocumentChat", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
@@ -22,32 +22,34 @@ describe("NdaChat", () => {
   });
 
   it("shows the initial assistant greeting", () => {
-    render(<NdaChat data={DEFAULT_MNDA} onChange={() => {}} />);
-    expect(screen.getByText(/I'll help you put together a Mutual NDA/)).toBeInTheDocument();
+    render(<DocumentChat data={EMPTY_DOCUMENT} onChange={() => {}} />);
+    expect(
+      screen.getByText(/I can help you create a legal document/),
+    ).toBeInTheDocument();
   });
 
-  it("sends a message and applies the returned data", async () => {
-    const updated: MndaData = { ...DEFAULT_MNDA, governingLaw: "Delaware" };
-    const fetchMock = mockFetchOnce("Got it — Delaware it is.", updated);
+  it("sends a message and applies the returned document", async () => {
+    const updated: DocumentData = {
+      docType: "mutual-nda",
+      coverFields: [{ label: "Purpose", value: "Evaluating a deal." }],
+      parties: [],
+    };
+    const fetchMock = mockFetchOnce("A Mutual NDA — got it.", updated);
     const onChange = vi.fn();
     const user = userEvent.setup();
 
-    render(<NdaChat data={DEFAULT_MNDA} onChange={onChange} />);
+    render(<DocumentChat data={EMPTY_DOCUMENT} onChange={onChange} />);
 
-    await user.type(screen.getByLabelText("Message"), "Governing law is Delaware");
+    await user.type(screen.getByLabelText("Message"), "I need an NDA");
     await user.click(screen.getByRole("button", { name: "Send" }));
 
-    // User message and assistant reply both render.
-    expect(screen.getByText("Governing law is Delaware")).toBeInTheDocument();
-    expect(await screen.findByText("Got it — Delaware it is.")).toBeInTheDocument();
-
-    // The extracted data is pushed up to the parent.
+    expect(screen.getByText("I need an NDA")).toBeInTheDocument();
+    expect(await screen.findByText("A Mutual NDA — got it.")).toBeInTheDocument();
     expect(onChange).toHaveBeenCalledWith(updated);
 
-    // The request carried the current data and the user message.
     const body = JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string);
-    expect(body.data.governingLaw).toBe("");
-    expect(body.messages.at(-1)).toEqual({ role: "user", content: "Governing law is Delaware" });
+    expect(body.data.docType).toBe("");
+    expect(body.messages.at(-1)).toEqual({ role: "user", content: "I need an NDA" });
   });
 
   it("surfaces an error and restores the input when the request fails", async () => {
@@ -55,13 +57,12 @@ describe("NdaChat", () => {
     const onChange = vi.fn();
     const user = userEvent.setup();
 
-    render(<NdaChat data={DEFAULT_MNDA} onChange={onChange} />);
+    render(<DocumentChat data={EMPTY_DOCUMENT} onChange={onChange} />);
     await user.type(screen.getByLabelText("Message"), "hello");
     await user.click(screen.getByRole("button", { name: "Send" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(/something went wrong/i);
     expect(onChange).not.toHaveBeenCalled();
-    // Input is restored so the user doesn't lose their message.
     expect(screen.getByLabelText("Message")).toHaveValue("hello");
   });
 });
