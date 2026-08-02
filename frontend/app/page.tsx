@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import NdaForm from "@/components/NdaForm";
+import NdaChat from "@/components/NdaChat";
 import NdaPreview from "@/components/NdaPreview";
 import DownloadPdfButton from "@/components/DownloadPdfButton";
 import { DEFAULT_MNDA, type MndaData } from "@/nda/types";
@@ -16,15 +16,15 @@ export default function Home() {
           Mutual NDA Creator
         </h1>
         <p className="mt-1 text-sm text-slate-600">
-          Fill in the details below to generate a Common Paper Mutual
-          Non-Disclosure Agreement, then download it as a PDF.
+          Chat with an AI to build a Common Paper Mutual Non-Disclosure
+          Agreement, then download it as a PDF.
         </p>
       </header>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Left: form */}
+        {/* Left: chat */}
         <div>
-          <NdaForm data={data} onChange={setData} />
+          <NdaChat data={data} onChange={setData} />
         </div>
 
         {/* Right: live preview + download */}

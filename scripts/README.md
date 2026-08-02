@@ -25,6 +25,8 @@ Requires [Docker](https://docs.docker.com/get-docker/).
 - `PORT` — host port to publish (default `8000`).
 - `JWT_SECRET` — signing secret; **set this in production**. Passed through to
   the container when defined.
+- `OPENROUTER_API_KEY` — required for the NDA chat. Read from the repo-root
+  `.env` automatically (or the environment) and passed through to the container.
 
 ```bash
 PORT=3000 JWT_SECRET="$(openssl rand -hex 32)" ./scripts/start.sh

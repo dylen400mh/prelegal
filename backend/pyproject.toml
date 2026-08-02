@@ -11,6 +11,8 @@ dependencies = [
     "bcrypt>=4.2",
     "pyjwt>=2.10",
     "email-validator>=2.2",
+    "litellm>=1.95.0",
+    "pydantic>=2.13.4",
 ]
 
 [dependency-groups]
